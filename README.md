@@ -1,2 +1,2 @@
-# programming-book
-📖 Study programming book and logging repository
+# learning-system
+📖 For building a daily learning system
