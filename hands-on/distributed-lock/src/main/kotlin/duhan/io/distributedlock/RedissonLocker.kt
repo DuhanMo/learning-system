@@ -3,13 +3,13 @@ package duhan.io.distributedlock
 import java.util.concurrent.TimeUnit
 import org.redisson.api.RLock
 import org.redisson.api.RedissonClient
-import org.slf4j.LoggerFactory.*
+import org.slf4j.LoggerFactory.getLogger
 import org.springframework.stereotype.Component
 
 @Component
 class RedissonLocker(
     private val redissonClient: RedissonClient,
-) : Locker{
+) : Locker {
     private val logger = getLogger(RedissonLocker::class.java)
 
     override fun <T> withLock(
@@ -17,8 +17,8 @@ class RedissonLocker(
         waitTime: Long,
         leaseTime: Long,
         timeUnit: TimeUnit,
-        action: () -> T,
         onFailure: (() -> T)?,
+        action: () -> T,
     ): T? {
         val lock: RLock = redissonClient.getLock(lockKey)
         return try {

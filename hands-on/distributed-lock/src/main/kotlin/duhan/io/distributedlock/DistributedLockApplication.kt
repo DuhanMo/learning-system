@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class DistributedLockApplication
 
 fun main(args: Array<String>) {
-	runApplication<DistributedLockApplication>(*args)
+    runApplication<DistributedLockApplication>(*args)
 }

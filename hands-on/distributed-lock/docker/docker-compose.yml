@@ -4,7 +4,19 @@ services:
   redis:
     image: redis:latest
     container_name: redis-container
-    restart: always
+    restart: no
     ports:
       - "6379:6379"
-    command: ["redis-server", "--appendonly", "yes", "--requirepass", "strongPassword"]
+    command: [ "redis-server", "--appendonly", "yes", "--requirepass", "password" ]
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container
+    restart: no
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: testdb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
