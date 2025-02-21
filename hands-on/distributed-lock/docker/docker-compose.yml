@@ -7,7 +7,7 @@ services:
     restart: no
     ports:
       - "6379:6379"
-    command: [ "redis-server", "--appendonly", "yes", "--requirepass", "password" ]
+    command: [ "redis-server", "--appendonly", "yes"]
 
   mysql:
     image: mysql:8.0

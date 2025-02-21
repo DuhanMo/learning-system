@@ -10,9 +10,7 @@ class DataConfig(
     private val repository: CouponRepository,
 ) : CommandLineRunner {
     override fun run(vararg args: String?) {
-        if (repository.findAll().isEmpty()) {
-            saveDummy()
-        }
+        saveDummy()
     }
 
     private fun saveDummy() {

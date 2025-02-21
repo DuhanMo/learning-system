@@ -28,3 +28,25 @@ docker-compose up -d
 비밀번호, 볼륨 등은 docker-compose.yml 내 설정을 확인해주세요.
 
 #### 3. 애플리케이션 서버 2대 기동
+```shell
+# 터미널 1
+./gradlew bootRun --args="--server.port=8080"
+# 터미널 2
+./gradlew bootRun --args="--server.port=8081"
+```
+
+#### 4. Jmeter 를 통해 8080, 8081 서버 테스트
+API: localhost:8080/coupons/without-lock
+![img_4.png](docs/img_4.png)
+
+API: localhost:8080/coupons/with-lock
+![img_2.png](docs/img_2.png)
+
+
+### Jmeter 결과
+![img_5.png](docs/img_5.png)
+- 500명의 유저가 한번에 
+  - 락 없이 발행하는 경우 경쟁 조건으로 인한 정합성 불일치
+  - 락과 함께 발행하는 경우 정상적으로 0장의 잔여재고
+
+
