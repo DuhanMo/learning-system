@@ -1,8 +1,8 @@
 package duhan.io.tobyspring6.exrate
 
 import duhan.io.tobyspring6.payment.ExRateProvider
-import org.springframework.stereotype.Component
 import java.math.BigDecimal
+import org.springframework.stereotype.Component
 
 @Component
 class SimpleExRateProvider : ExRateProvider {
