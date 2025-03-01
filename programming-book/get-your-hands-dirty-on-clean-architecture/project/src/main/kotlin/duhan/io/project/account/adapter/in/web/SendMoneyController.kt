@@ -19,11 +19,12 @@ class SendMoneyController(
         @PathVariable targetAccountId: Long,
         @PathVariable amount: Long,
     ) {
-        val command = SendMoneyCommand(
-            sourceAccountId = AccountId(sourceAccountId),
-            targetAccountId = AccountId(targetAccountId),
-            money = Money.of(amount)
+        sendMoneyUseCase.sendMoney(
+            SendMoneyCommand(
+                sourceAccountId = AccountId(sourceAccountId),
+                targetAccountId = AccountId(targetAccountId),
+                money = Money.of(amount),
+            )
         )
-        sendMoneyUseCase.sendMoney(command)
     }
 }

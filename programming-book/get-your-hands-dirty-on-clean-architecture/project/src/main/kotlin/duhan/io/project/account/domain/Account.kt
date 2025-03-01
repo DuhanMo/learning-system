@@ -26,7 +26,7 @@ class Account(
 
     fun deposit(money: Money, sourceAccountId: AccountId): Boolean {
         val deposit = Activity(
-            ownerAccountId = id,
+            ownerAccountId = id!!,
             sourceAccountId = sourceAccountId,
             targetAccountId = id,
             timestamp = LocalDateTime.now(),
