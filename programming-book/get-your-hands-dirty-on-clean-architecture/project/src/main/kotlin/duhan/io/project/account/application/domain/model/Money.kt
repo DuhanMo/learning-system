@@ -1,15 +1,15 @@
-package duhan.io.project.account.domain
+package duhan.io.project.account.application.domain.model
 
-import java.math.BigInteger
+import java.math.BigDecimal
 
-data class Money private constructor(
-    val amount: BigInteger,
+data class Money(
+    val amount: BigDecimal,
 ) {
-    fun isPositiveOrZero(): Boolean = amount >= BigInteger.ZERO
+    fun isPositiveOrZero(): Boolean = amount >= BigDecimal.ZERO
 
-    fun isNegative(): Boolean = amount < BigInteger.ZERO
+    fun isNegative(): Boolean = amount < BigDecimal.ZERO
 
-    fun isPositive(): Boolean = amount > BigInteger.ZERO
+    fun isPositive(): Boolean = amount > BigDecimal.ZERO
 
     fun isGreaterThanOrEqualTo(money: Money): Boolean = amount >= money.amount
 
@@ -25,7 +25,7 @@ data class Money private constructor(
         val ZERO = of(0L)
 
         fun of(value: Long): Money {
-            return Money(BigInteger.valueOf(value))
+            return Money(BigDecimal.valueOf(value))
         }
 
         fun add(a: Money, b: Money): Money {

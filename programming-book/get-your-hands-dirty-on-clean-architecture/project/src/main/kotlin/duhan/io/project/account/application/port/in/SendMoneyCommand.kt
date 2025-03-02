@@ -1,7 +1,7 @@
 package duhan.io.project.account.application.port.`in`
 
-import duhan.io.project.account.domain.Account.AccountId
-import duhan.io.project.account.domain.Money
+import duhan.io.project.account.application.domain.model.Account.AccountId
+import duhan.io.project.account.application.domain.model.Money
 
 data class SendMoneyCommand(
     val sourceAccountId: AccountId,

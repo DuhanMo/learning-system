@@ -10,5 +10,5 @@ import jakarta.persistence.Table
 class AccountJpaEntity(
     @Id
     @GeneratedValue
-    val id:Long,
+    val id: Long,
 )

@@ -2,8 +2,8 @@ package duhan.io.project.account.adapter.out.persistence
 
 import duhan.io.project.account.application.port.out.LoadAccountPort
 import duhan.io.project.account.application.port.out.UpdateAccountStatePort
-import duhan.io.project.account.domain.Account
-import duhan.io.project.account.domain.Account.AccountId
+import duhan.io.project.account.application.domain.model.Account
+import duhan.io.project.account.application.domain.model.Account.AccountId
 import jakarta.persistence.EntityNotFoundException
 import java.time.LocalDateTime
 import org.springframework.data.repository.findByIdOrNull
@@ -41,8 +41,8 @@ class AccountPersistenceAdapter(
 
     override fun updateActivities(account: Account) {
         account.activityWindow.activities.forEach { activity ->
-            if (activity.id.value == 0L) {
-                activityRepository.save(accountMapper.mapToJpaEntity(activity));
+            if (activity.id == null) {
+                activityRepository.save(accountMapper.mapToJpaEntity(activity))
             }
         }
     }

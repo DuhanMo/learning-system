@@ -1,6 +1,6 @@
-package duhan.io.project.account.domain
+package duhan.io.project.account.application.domain.model
 
-import duhan.io.project.account.domain.Account.AccountId
+import duhan.io.project.account.application.domain.model.Account.AccountId
 import java.time.LocalDateTime
 
 class ActivityWindow(activities: List<Activity>) {

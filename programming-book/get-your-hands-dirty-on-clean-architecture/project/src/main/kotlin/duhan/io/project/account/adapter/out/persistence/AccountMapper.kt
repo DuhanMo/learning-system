@@ -1,11 +1,11 @@
 package duhan.io.project.account.adapter.out.persistence
 
-import duhan.io.project.account.domain.Account
-import duhan.io.project.account.domain.Account.AccountId
-import duhan.io.project.account.domain.Activity
-import duhan.io.project.account.domain.Activity.ActivityId
-import duhan.io.project.account.domain.ActivityWindow
-import duhan.io.project.account.domain.Money
+import duhan.io.project.account.application.domain.model.Account
+import duhan.io.project.account.application.domain.model.Account.AccountId
+import duhan.io.project.account.application.domain.model.Activity
+import duhan.io.project.account.application.domain.model.Activity.ActivityId
+import duhan.io.project.account.application.domain.model.ActivityWindow
+import duhan.io.project.account.application.domain.model.Money
 import org.springframework.stereotype.Component
 
 @Component
@@ -40,7 +40,7 @@ class AccountMapper {
     })
 
     fun mapToJpaEntity(activity: Activity): ActivityJpaEntity = ActivityJpaEntity(
-        id = activity.id.value,
+        id = activity.id?.value ?: 0L,
         timestamp = activity.timestamp,
         ownerAccountId = activity.ownerAccountId.value,
         sourceAccountId = activity.sourceAccountId.value,

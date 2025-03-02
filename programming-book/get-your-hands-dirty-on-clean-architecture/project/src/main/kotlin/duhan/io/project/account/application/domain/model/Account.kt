@@ -1,20 +1,20 @@
-package duhan.io.project.account.domain
+package duhan.io.project.account.application.domain.model
 
 import java.time.LocalDateTime
 
 class Account(
-    val id: AccountId = AccountId(0L),
+    val id: AccountId? = null,
     val baselineBalance: Money,
     val activityWindow: ActivityWindow,
 ) {
-    fun calculateBalance(): Money = Money.add(baselineBalance, activityWindow.calculateBalance(id))
+    fun calculateBalance(): Money = Money.add(baselineBalance, activityWindow.calculateBalance(id!!))
 
     fun withdraw(money: Money, targetAccountId: AccountId): Boolean {
         if (!mayWithdraw(money)) {
             return false
         }
         val activity = Activity(
-            ownerAccountId = id,
+            ownerAccountId = id!!,
             sourceAccountId = id,
             targetAccountId = targetAccountId,
             timestamp = LocalDateTime.now(),

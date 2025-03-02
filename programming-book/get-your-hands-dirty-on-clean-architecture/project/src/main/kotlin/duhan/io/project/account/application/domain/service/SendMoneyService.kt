@@ -1,4 +1,4 @@
-package duhan.io.project.account.application.service
+package duhan.io.project.account.application.domain.service
 
 import duhan.io.project.account.application.port.`in`.SendMoneyCommand
 import duhan.io.project.account.application.port.`in`.SendMoneyUseCase
@@ -15,6 +15,7 @@ class SendMoneyService(
     private val loadAccountPort: LoadAccountPort,
     private val accountLock: AccountLock,
     private val updateAccountStatePort: UpdateAccountStatePort,
+    private val moneyTransferProperties: MoneyTransferProperties,
 ) : SendMoneyUseCase {
     override fun sendMoney(command: SendMoneyCommand): Boolean {
         val baselineDate = LocalDateTime.now().minusDays(10)
@@ -30,8 +31,8 @@ class SendMoneyService(
         val sourceAccountId = sourceAccount.id
         val targetAccountId = targetAccount.id
 
-        accountLock.lockAccount(sourceAccountId)
-        if (!sourceAccount.withdraw(command.money, targetAccountId)
+        accountLock.lockAccount(sourceAccountId!!)
+        if (!sourceAccount.withdraw(command.money, targetAccountId!!)
         ) {
             accountLock.releaseAccount(sourceAccountId)
             return false

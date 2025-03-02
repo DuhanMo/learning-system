@@ -1,11 +1,11 @@
-package duhan.io.project.account.application.service
+package duhan.io.project.account.adapter.out.persistence
 
+import duhan.io.project.account.application.domain.model.Account
 import duhan.io.project.account.application.port.out.AccountLock
-import duhan.io.project.account.domain.Account
 import org.springframework.stereotype.Component
 
 @Component
-class NoOpsAccountLock : AccountLock {
+class NoOpAccountLock: AccountLock {
     override fun lockAccount(accountId: Account.AccountId) {
         // do nothing
     }

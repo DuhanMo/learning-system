@@ -1,7 +1,7 @@
 package duhan.io.project.account.application.port.out
 
-import duhan.io.project.account.domain.Account
-import duhan.io.project.account.domain.Account.AccountId
+import duhan.io.project.account.application.domain.model.Account
+import duhan.io.project.account.application.domain.model.Account.AccountId
 import java.time.LocalDateTime
 
 interface LoadAccountPort {

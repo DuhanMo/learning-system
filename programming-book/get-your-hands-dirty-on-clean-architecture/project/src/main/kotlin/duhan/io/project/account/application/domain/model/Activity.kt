@@ -1,10 +1,10 @@
-package duhan.io.project.account.domain
+package duhan.io.project.account.application.domain.model
 
-import duhan.io.project.account.domain.Account.AccountId
+import duhan.io.project.account.application.domain.model.Account.AccountId
 import java.time.LocalDateTime
 
 class Activity(
-    val id: ActivityId = ActivityId(0L),
+    val id: ActivityId? = null,
     val ownerAccountId: AccountId,
     val sourceAccountId: AccountId,
     val targetAccountId: AccountId,
