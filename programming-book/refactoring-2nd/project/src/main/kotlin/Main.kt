@@ -43,26 +43,7 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
 
     for (perf in invoice.performances) {
         val play = plays[perf.playID]!!
-        var thisAmount = 0
-
-        when (play.type) {
-            "tragedy" -> { // 비극
-                thisAmount = 40_000
-                if (perf.audience > 30) {
-                    thisAmount += 1_000 * (perf.audience - 30)
-                }
-            }
-
-            "comedy" -> { // 희극
-                thisAmount = 30_000
-                if (perf.audience > 20) {
-                    thisAmount += 10_000 + 500 * (perf.audience - 20)
-                }
-                thisAmount += 300 * perf.audience
-            }
-
-            else -> throw IllegalArgumentException("알 수 없는 장르: ${play.type}")
-        }
+        val thisAmount = amountFor(perf, play)
         // 포인트를 적립한다.
         volumeCredits += max(perf.audience - 30, 0)
         // 희극 관객 5명마다 추가 포인트를 제공한다.
@@ -76,6 +57,30 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
     return result
 }
 
+fun amountFor(perf: Performance, play: Play): Int {
+    var thisAmount: Int
+
+    when (play.type) {
+        "tragedy" -> { // 비극
+            thisAmount = 40_000
+            if (perf.audience > 30) {
+                thisAmount += 1_000 * (perf.audience - 30)
+            }
+        }
+
+        "comedy" -> { // 희극
+            thisAmount = 30_000
+            if (perf.audience > 20) {
+                thisAmount += 10_000 + 500 * (perf.audience - 20)
+            }
+            thisAmount += 300 * perf.audience
+        }
+
+        else -> throw IllegalArgumentException("알 수 없는 장르: ${play.type}")
+    }
+
+    return thisAmount
+}
 
 fun main() {
     val result = statement(invoices[0], plays)
