@@ -42,10 +42,8 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
     }
 
     for (perf in invoice.performances) {
-        // 포인트를 적립한다.
-        volumeCredits += max(perf.audience - 30, 0)
-        // 희극 관객 5명마다 추가 포인트를 제공한다.
-        if ("comedy" == playFor(perf).type) volumeCredits += (perf.audience / 5)
+        volumeCredits += volumeCreditsFor(perf)
+
         // 청구 내역을 출력한다.
         result += " ${playFor(perf).name}: ${format(amountFor(perf) / 100)} (${perf.audience}석)\n"
         totalAmount += amountFor(perf)
@@ -82,6 +80,16 @@ fun amountFor(aPerformance: Performance): Int {
 
 fun playFor(aPerformance: Performance): Play {
     return plays[aPerformance.playID]!!
+}
+
+fun volumeCreditsFor(perf: Performance): Int {
+    var volumeCredits = 0
+    volumeCredits += max(perf.audience - 30, 0)
+    // 희극 관객 5명마다 추가 포인트를 제공한다.
+    if ("comedy" == playFor(perf).type) {
+        volumeCredits += (perf.audience / 5)
+    }
+    return volumeCredits
 }
 
 fun main() {
