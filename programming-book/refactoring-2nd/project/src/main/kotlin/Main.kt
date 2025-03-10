@@ -82,14 +82,14 @@ fun playFor(aPerformance: Performance): Play {
     return plays[aPerformance.playID]!!
 }
 
-fun volumeCreditsFor(perf: Performance): Int {
-    var volumeCredits = 0
-    volumeCredits += max(perf.audience - 30, 0)
+fun volumeCreditsFor(aPerformance: Performance): Int {
+    var result = 0
+    result += max(aPerformance.audience - 30, 0)
     // 희극 관객 5명마다 추가 포인트를 제공한다.
-    if ("comedy" == playFor(perf).type) {
-        volumeCredits += (perf.audience / 5)
+    if ("comedy" == playFor(aPerformance).type) {
+        result += (aPerformance.audience / 5)
     }
-    return volumeCredits
+    return result
 }
 
 fun main() {
