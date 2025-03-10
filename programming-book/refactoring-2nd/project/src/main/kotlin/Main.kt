@@ -31,25 +31,23 @@ val invoices = listOf(
 )
 
 fun statement(invoice: Invoice, plays: Map<String, Play>): String {
-    var totalAmount = 0
-    var volumeCredits = 0
-    var result = "청구 내역 (고객명: ${invoice.customer})\n"
-
-    fun format(amount: Number): String {
-        val formatter = NumberFormat.getCurrencyInstance(Locale.US)
-        formatter.minimumFractionDigits = 2
-        return formatter.format(amount.toDouble())
+    fun totalVolumeCredits(): Int {
+        var volumeCredits = 0
+        for (perf in invoice.performances) {
+            volumeCredits += volumeCreditsFor(perf)
+        }
+        return volumeCredits
     }
 
+    var totalAmount = 0
+    var result = "청구 내역 (고객명: ${invoice.customer})\n"
     for (perf in invoice.performances) {
-        volumeCredits += volumeCreditsFor(perf)
-
         // 청구 내역을 출력한다.
-        result += " ${playFor(perf).name}: ${format(amountFor(perf) / 100)} (${perf.audience}석)\n"
+        result += " ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience}석)\n"
         totalAmount += amountFor(perf)
     }
-    result += "총액: ${format(totalAmount / 100)}\n"
-    result += "적립 포인트: ${volumeCredits}점\n"
+    result += "총액: ${usd(totalAmount)}\n"
+    result += "적립 포인트: ${totalVolumeCredits()}점\n"
     return result
 }
 
@@ -91,6 +89,10 @@ fun volumeCreditsFor(aPerformance: Performance): Int {
     }
     return result
 }
+
+fun usd(aNumber: Number): String = NumberFormat.getCurrencyInstance(Locale.US).apply {
+    minimumFractionDigits = 2
+}.format(aNumber.toDouble() / 100)
 
 fun main() {
     val result = statement(invoices[0], plays)
