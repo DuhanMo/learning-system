@@ -12,6 +12,6 @@ class MainKtTest {
                 " Othello: ${'$'}500.00 (40석)\n" +
                 "총액: ${'$'}1,730.00\n" +
                 "적립 포인트: 47점\n"
-        assertEquals(expected, statement(invoices[0], plays))
+        assertEquals(expected, statement(invoices[0]))
     }
 }
