@@ -1,6 +1,5 @@
-import duhan.io.invoices
-import duhan.io.plays
-import duhan.io.statement
+package ch01
+
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
