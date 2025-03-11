@@ -2,7 +2,6 @@ package ch01
 
 import kotlin.math.max
 
-
 fun createStatementData(invoice: Invoice): StatementData {
     val performances = invoice.performances.map { enrichPerformance(it) }
     return StatementData(
