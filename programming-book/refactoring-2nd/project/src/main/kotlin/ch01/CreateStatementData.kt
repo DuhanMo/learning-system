@@ -20,22 +20,12 @@ fun enrichPerformance(aPerformance: Performance): EnrichedPerformance {
         audience = aPerformance.audience,
         play = calculator.play,
         amount = calculator.amount(),
-        volumeCredits = volumeCreditsFor(aPerformance, play),
+        volumeCredits = calculator.volumeCredits(),
     )
 }
 
 fun playFor(aPerformance: Performance): Play {
     return plays[aPerformance.playID]!!
-}
-
-fun volumeCreditsFor(aPerformance: Performance, play: Play): Int {
-    var result = 0
-    result += max(aPerformance.audience - 30, 0)
-    // 희극 관객 5명마다 추가 포인트를 제공한다.
-    if ("comedy" == play.type) {
-        result += (aPerformance.audience / 5)
-    }
-    return result
 }
 
 fun totalAmount(performances: List<EnrichedPerformance>): Int = performances.sumOf { it.amount }
@@ -44,7 +34,7 @@ fun totalVolumeCredits(performances: List<EnrichedPerformance>): Int = performan
 
 class PerformanceCalculator(
     val performance: Performance,
-    val play : Play,
+    val play: Play,
 ) {
     fun amount(): Int {
         var result: Int
@@ -68,6 +58,16 @@ class PerformanceCalculator(
             else -> throw IllegalArgumentException("알 수 없는 장르: ${play.type}")
         }
 
+        return result
+    }
+
+    fun volumeCredits(): Int {
+        var result = 0
+        result += max(performance.audience - 30, 0)
+        // 희극 관객 5명마다 추가 포인트를 제공한다.
+        if ("comedy" == play.type) {
+            result += (performance.audience / 5)
+        }
         return result
     }
 }
