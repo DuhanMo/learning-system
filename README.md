@@ -14,6 +14,8 @@
 ### 핸즈온
 간단한 실습부터 분산 락, 동시성 제어, 시큐리티 등 실제 업무나 프로젝트에서 바로 활용 가능한 예시 코드를 학습하기 위한 디렉터리입니다.
 1. [Distributed Lock(분산락)](hands-on/distributed-lock/README.md)
+2. [Spring Kafka](https://github.com/DuhanMo/learning-system/blob/main/hands-on/spring-kafka)
+
 
 ### 강의
 다양한 강의를 듣고 실습 또는 내용을 정리한 디렉터리입니다.
