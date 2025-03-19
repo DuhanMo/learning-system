@@ -21,3 +21,4 @@
 다양한 강의 또는 아티클을 읽고 실습 또는 내용을 정리한 디렉터리입니다.
 1. [인프런 - 토비의 스프링6](leture/inflearn/toby-spring6/README.md)
 2. [데이터베이스 인덱스 정리](leture/%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4%20%EC%9D%B8%EB%8D%B1%EC%8A%A4%20%EC%A0%95%EB%A6%AC.md)
+3. [개발자를 위한 레디스](leture/%EA%B0%9C%EB%B0%9C%EC%9E%90%EB%A5%BC%20%EC%9C%84%ED%95%9C%20%EB%A0%88%EB%94%94%EC%8A%A4.md)
