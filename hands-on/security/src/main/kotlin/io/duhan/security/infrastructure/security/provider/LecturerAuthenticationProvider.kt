@@ -3,7 +3,7 @@ package io.duhan.security.infrastructure.security.provider
 import io.duhan.security.domain.UserType.LECTURER
 import io.duhan.security.infrastructure.persistence.support.LecturerJpaRepository
 import io.duhan.security.infrastructure.security.token.EmailAuthenticationToken.LecturerEmailAuthenticationToken
-import io.duhan.security.infrastructure.security.token.LecturerDetails
+import io.duhan.security.infrastructure.security.token.UserDetails
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.Authentication
@@ -30,13 +30,7 @@ class LecturerAuthenticationProvider(
         return LecturerEmailAuthenticationToken(
             email = email,
             authorities = listOf(SimpleGrantedAuthority(LECTURER.roleName())),
-            details =
-                LecturerDetails(
-                    id = lecturer.id,
-                    name = lecturer.name,
-                    email = lecturer.email,
-                    subject = lecturer.subject,
-                ),
+            details = UserDetails(lecturer.id),
         )
     }
 

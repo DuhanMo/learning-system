@@ -3,7 +3,7 @@ package io.duhan.security.infrastructure.security.provider
 import io.duhan.security.domain.UserType.MEMBER
 import io.duhan.security.infrastructure.persistence.support.MemberJpaRepository
 import io.duhan.security.infrastructure.security.token.EmailAuthenticationToken.MemberEmailAuthenticationToken
-import io.duhan.security.infrastructure.security.token.MemberDetails
+import io.duhan.security.infrastructure.security.token.UserDetails
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.Authentication
@@ -30,12 +30,7 @@ class MemberAuthenticationProvider(
         return MemberEmailAuthenticationToken(
             email = email,
             authorities = listOf(SimpleGrantedAuthority(MEMBER.roleName())),
-            details =
-                MemberDetails(
-                    id = member.id,
-                    name = member.name,
-                    grade = member.grade,
-                ),
+            details = UserDetails(member.id),
         )
     }
 

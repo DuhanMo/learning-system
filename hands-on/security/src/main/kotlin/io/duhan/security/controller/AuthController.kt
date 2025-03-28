@@ -11,34 +11,42 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class AuthController(private val authService: AuthService) {
+class AuthController(
+    private val authService: AuthService,
+) {
     @PostMapping("/admin/login")
-    fun adminLogin(@RequestBody request: EmailLoginRequest): AuthResult =
+    fun adminLogin(
+        @RequestBody request: EmailLoginRequest,
+    ): AuthResult =
         authService.authenticate(
             EmailAuthCommand(
                 email = request.email,
                 password = request.password,
                 userType = ADMIN,
-            )
+            ),
         )
 
     @PostMapping("/lecturer/login")
-    fun lecturerLogin(@RequestBody request: EmailLoginRequest): AuthResult =
+    fun lecturerLogin(
+        @RequestBody request: EmailLoginRequest,
+    ): AuthResult =
         authService.authenticate(
             EmailAuthCommand(
                 email = request.email,
                 password = request.password,
                 userType = LECTURER,
-            )
+            ),
         )
 
     @PostMapping("/member/login")
-    fun memberLogin(@RequestBody request: EmailLoginRequest): AuthResult =
+    fun memberLogin(
+        @RequestBody request: EmailLoginRequest,
+    ): AuthResult =
         authService.authenticate(
             EmailAuthCommand(
                 email = request.email,
                 password = request.password,
                 userType = MEMBER,
-            )
+            ),
         )
 }

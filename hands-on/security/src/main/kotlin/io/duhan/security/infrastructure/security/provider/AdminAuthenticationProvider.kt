@@ -2,8 +2,8 @@ package io.duhan.security.infrastructure.security.provider
 
 import io.duhan.security.domain.UserType.ADMIN
 import io.duhan.security.infrastructure.persistence.support.AdminJpaRepository
-import io.duhan.security.infrastructure.security.token.AdminDetails
 import io.duhan.security.infrastructure.security.token.EmailAuthenticationToken.AdminEmailAuthenticationToken
+import io.duhan.security.infrastructure.security.token.UserDetails
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.Authentication
@@ -28,13 +28,7 @@ class AdminAuthenticationProvider(
         return AdminEmailAuthenticationToken(
             email = email,
             authorities = listOf(SimpleGrantedAuthority(ADMIN.roleName())),
-            details =
-                AdminDetails(
-                    id = admin.id,
-                    name = admin.name,
-                    email = admin.email,
-                    department = admin.department,
-                ),
+            details = UserDetails(admin.id),
         )
     }
 
