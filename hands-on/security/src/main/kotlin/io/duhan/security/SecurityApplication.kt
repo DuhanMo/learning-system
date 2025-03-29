@@ -1,9 +1,11 @@
 package io.duhan.security
 
 import io.duhan.security.domain.Admin
+import io.duhan.security.domain.AdminRole
 import io.duhan.security.domain.Lecturer
 import io.duhan.security.domain.Member
 import io.duhan.security.infrastructure.persistence.support.AdminJpaRepository
+import io.duhan.security.infrastructure.persistence.support.AdminRoleJpaRepository
 import io.duhan.security.infrastructure.persistence.support.LecturerJpaRepository
 import io.duhan.security.infrastructure.persistence.support.MemberJpaRepository
 import org.springframework.boot.CommandLineRunner
@@ -22,17 +24,39 @@ fun main(args: Array<String>) {
 @Component
 class DataInit(
     private val adminJpaRepository: AdminJpaRepository,
+    private val adminRoleJpaRepository: AdminRoleJpaRepository,
     private val lecturerJpaRepository: LecturerJpaRepository,
     private val memberJpaRepository: MemberJpaRepository,
     private val passwordEncoder: PasswordEncoder,
 ) : CommandLineRunner {
     override fun run(vararg args: String?) {
-        adminJpaRepository.save(
-            Admin(
-                email = "admin@test.com",
-                password = passwordEncoder.encode("test"),
-                name = "김관리",
-                department = "경무과",
+        val admin =
+            adminJpaRepository.save(
+                Admin(
+                    email = "admin@test.com",
+                    password = passwordEncoder.encode("test"),
+                    name = "김관리",
+                    department = "경무과",
+                ),
+            )
+        adminRoleJpaRepository.save(
+            AdminRole(
+                adminId = admin.id,
+                role = "ROLE_ADMIN",
+            ),
+        )
+
+        adminRoleJpaRepository.save(
+            AdminRole(
+                adminId = admin.id,
+                role = "CREATE_MEMBER",
+            ),
+        )
+
+        adminRoleJpaRepository.save(
+            AdminRole(
+                adminId = admin.id,
+                role = "DELETE_MEMBER",
             ),
         )
 

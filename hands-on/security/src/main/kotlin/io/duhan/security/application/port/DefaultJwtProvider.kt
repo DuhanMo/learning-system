@@ -15,9 +15,9 @@ import javax.crypto.SecretKey
 
 @Component
 class DefaultJwtProvider(
-    @Value("\${jwt.secret:asdfdasfdas}") private val secretKey: String,
-    @Value("\${jwt.access-token-validity-in-seconds:3600}") private val accessTokenValidityInSeconds: Long,
-    @Value("\${jwt.refresh-token-validity-in-seconds:604800}") private val refreshTokenValidityInSeconds: Long,
+    @Value("\${jwt.secret}") private val secretKey: String,
+    @Value("\${jwt.access-token-expiration-seconds:3600}") private val accessTokenExpirationSeconds: Long,
+    @Value("\${jwt.refresh-token-expiration-seconds:604800}") private val refreshTokenExpirationSeconds: Long,
 ) : JwtProvider {
     private val logger = LoggerFactory.getLogger(JwtProvider::class.java)
 
@@ -37,69 +37,72 @@ class DefaultJwtProvider(
             .build()
     }
 
+    override fun createAccessToken(
+        id: Long,
+        roles: List<String>,
+    ): String =
+        createToken(
+            subject = id.toString(),
+            authorities = roles,
+            expirationSeconds = accessTokenExpirationSeconds,
+            tokenType = TOKEN_TYPE_ACCESS,
+        )
+
+    override fun createRefreshToken(
+        id: Long,
+        roles: List<String>,
+    ): String =
+        createToken(
+            subject = id.toString(),
+            authorities = roles,
+            expirationSeconds = refreshTokenExpirationSeconds,
+            tokenType = TOKEN_TYPE_REFRESH,
+        )
+
     private fun createToken(
         subject: String,
-        authorities: String,
+        authorities: List<String>,
         expirationSeconds: Long,
         tokenType: String,
     ): String {
         val now = Instant.now()
         val tokenId = UUID.randomUUID().toString()
+        val roles = mutableListOf<String>()
+        val permissions = mutableListOf<String>()
+
+        authorities.forEach {
+            if (it.startsWith("ROLE_")) {
+                roles.add(it)
+            } else {
+                permissions.add(it)
+            }
+        }
 
         return Jwts.builder()
             .subject(subject)
-            .claim(AUTHORITIES_KEY, authorities)
+            .claim(ROLES_KEY, roles)
+            .claim(PERMISSIONS_KEY, permissions)
             .claim(TOKEN_TYPE_KEY, tokenType)
-            .id(tokenId) // JWT ID 설정으로 토큰 고유성 보장
+            .id(tokenId)
             .issuer(ISSUER)
             .issuedAt(Date.from(now))
-            .notBefore(Date.from(now)) // 토큰 활성화 시간 (현재)
+            .notBefore(Date.from(now))
             .expiration(Date.from(now.plus(expirationSeconds, ChronoUnit.SECONDS)))
             .signWith(key)
             .compact()
     }
 
-    override fun createAccessToken(): String {
-        return "ey.aaa"
-    }
-
-    override fun createRefreshToken(): String {
-        return "eaz.aaa"
-    }
-
     companion object {
-        private const val AUTHORITIES_KEY = "auth"
+        private const val ROLES_KEY = "roles"
+        private const val PERMISSIONS_KEY = "permissions"
         private const val TOKEN_TYPE_KEY = "typ"
         private const val TOKEN_TYPE_ACCESS = "access"
         private const val TOKEN_TYPE_REFRESH = "refresh"
-        private const val ISSUER = "secure-api-service"
+        private const val ISSUER = "sample-security-api"
     }
 }
-
 /*
-* package com.example.security.jwt
-
-import io.jsonwebtoken.Claims
-import io.jsonwebtoken.JwtParser
-import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.io.Decoders
-import io.jsonwebtoken.security.Keys
-import io.jsonwebtoken.security.SignatureException
-import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.Authentication
-import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.core.userdetails.User
-import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.stereotype.Component
-import java.security.Key
-import java.time.Instant
-import java.time.temporal.ChronoUnit
-import java.util.*
-import javax.crypto.SecretKey
-
-/**
+* /**
  * JWT 토큰 생성 및 검증을 담당하는 Provider 클래스
  * 모범 사례를 반영하여 구현
  */
@@ -112,7 +115,8 @@ class JwtProvider(
 ) {
     companion object {
         private val logger = LoggerFactory.getLogger(JwtProvider::class.java)
-        private const val AUTHORITIES_KEY = "auth"
+        private const val ROLES_KEY = "roles"
+        private const val PERMISSIONS_KEY = "permissions"
         private const val TOKEN_TYPE_KEY = "typ"
         private const val TOKEN_TYPE_ACCESS = "access"
         private const val TOKEN_TYPE_REFRESH = "refresh"
@@ -142,9 +146,23 @@ class JwtProvider(
  * 사용자 인증 정보를 기반으로 액세스 토큰 생성
  */
     fun createAccessToken(authentication: Authentication): String {
+        val roles = mutableListOf<String>()
+        val permissions = mutableListOf<String>()
+
+        // 권한 정보를 역할과 퍼미션으로 분리
+        for (authority in authentication.authorities) {
+            val auth = authority.authority
+            if (auth.startsWith("ROLE_")) {
+                roles.add(auth)
+            } else {
+                permissions.add(auth)
+            }
+        }
+
         return createToken(
             subject = authentication.name,
-            authorities = authentication.authorities.joinToString(",") { it.authority },
+            roles = roles,
+            permissions = permissions,
             expirationSeconds = accessTokenValidityInSeconds,
             tokenType = TOKEN_TYPE_ACCESS
         )
@@ -154,33 +172,49 @@ class JwtProvider(
  * 사용자 인증 정보를 기반으로 리프레시 토큰 생성
  */
     fun createRefreshToken(authentication: Authentication): String {
+        val roles = mutableListOf<String>()
+        val permissions = mutableListOf<String>()
+
+        // 권한 정보를 역할과 퍼미션으로 분리
+        for (authority in authentication.authorities) {
+            val auth = authority.authority
+            if (auth.startsWith("ROLE_")) {
+                roles.add(auth)
+            } else {
+                permissions.add(auth)
+            }
+        }
+
         return createToken(
             subject = authentication.name,
-            authorities = authentication.authorities.joinToString(",") { it.authority },
+            roles = roles,
+            permissions = permissions,
             expirationSeconds = refreshTokenValidityInSeconds,
             tokenType = TOKEN_TYPE_REFRESH
         )
     }
 
     /**
- * 사용자 ID와 역할을 기반으로 액세스 토큰 생성
+ * 사용자 ID와 역할, 권한을 기반으로 액세스 토큰 생성
  */
-    fun createAccessToken(userId: String, roles: List<String>): String {
+    fun createAccessToken(userId: String, roles: List<String>, permissions: List<String> = emptyList()): String {
         return createToken(
             subject = userId,
-            authorities = roles.joinToString(","),
+            roles = roles,
+            permissions = permissions,
             expirationSeconds = accessTokenValidityInSeconds,
             tokenType = TOKEN_TYPE_ACCESS
         )
     }
 
     /**
- * 사용자 ID와 역할을 기반으로 리프레시 토큰 생성
+ * 사용자 ID와 역할, 권한을 기반으로 리프레시 토큰 생성
  */
-    fun createRefreshToken(userId: String, roles: List<String>): String {
+    fun createRefreshToken(userId: String, roles: List<String>, permissions: List<String> = emptyList()): String {
         return createToken(
             subject = userId,
-            authorities = roles.joinToString(","),
+            roles = roles,
+            permissions = permissions,
             expirationSeconds = refreshTokenValidityInSeconds,
             tokenType = TOKEN_TYPE_REFRESH
         )
@@ -191,7 +225,8 @@ class JwtProvider(
  */
     private fun createToken(
         subject: String,
-        authorities: String,
+        roles: List<String>,
+        permissions: List<String>,
         expirationSeconds: Long,
         tokenType: String
     ): String {
@@ -200,7 +235,8 @@ class JwtProvider(
 
         return Jwts.builder()
             .subject(subject)
-            .claim(AUTHORITIES_KEY, authorities)
+            .claim(ROLES_KEY, roles)
+            .claim(PERMISSIONS_KEY, permissions)
             .claim(TOKEN_TYPE_KEY, tokenType)
             .id(tokenId) // JWT ID 설정으로 토큰 고유성 보장
             .issuer(ISSUER)
@@ -217,11 +253,19 @@ class JwtProvider(
     fun getAuthentication(token: String): Authentication {
         try {
             val claims = parseClaims(token)
+            val authorities = mutableListOf<GrantedAuthority>()
 
-            val authorities = claims[AUTHORITIES_KEY].toString()
-                .split(",")
-                .filter { it.isNotEmpty() }
-                .map { SimpleGrantedAuthority(it) }
+            // 역할 추가
+            val roles = (claims[ROLES_KEY] as? List<*>)?.filterIsInstance<String>() ?: emptyList()
+            for (role in roles) {
+                authorities.add(SimpleGrantedAuthority(role))
+            }
+
+            // 권한 추가
+            val permissions = (claims[PERMISSIONS_KEY] as? List<*>)?.filterIsInstance<String>() ?: emptyList()
+            for (permission in permissions) {
+                authorities.add(SimpleGrantedAuthority(permission))
+            }
 
             val principal: UserDetails = User(
                 claims.subject,
@@ -326,6 +370,22 @@ class JwtProvider(
  */
     fun getUserIdFromToken(token: String): String {
         return parseClaims(token).subject
+    }
+
+    /**
+ * 토큰에서 역할 목록 추출
+ */
+    fun getRolesFromToken(token: String): List<String> {
+        val claims = parseClaims(token)
+        return (claims[ROLES_KEY] as? List<*>)?.filterIsInstance<String>() ?: emptyList()
+    }
+
+    /**
+ * 토큰에서 권한 목록 추출
+ */
+    fun getPermissionsFromToken(token: String): List<String> {
+        val claims = parseClaims(token)
+        return (claims[PERMISSIONS_KEY] as? List<*>)?.filterIsInstance<String>() ?: emptyList()
     }
 
     /**

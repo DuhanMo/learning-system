@@ -13,14 +13,14 @@ import org.springframework.stereotype.Component
 
 @Component
 class MemberAuthenticationProvider(
-    private val memberJpaRepository: MemberJpaRepository,
+    private val memberRepository: MemberJpaRepository,
     private val passwordEncoder: PasswordEncoder,
 ) : AuthenticationProvider {
     override fun authenticate(authentication: Authentication): Authentication {
         val email = authentication.principal as String
         val password = authentication.credentials as String
         val member =
-            memberJpaRepository.findByEmail(email)
+            memberRepository.findByEmail(email)
                 ?: throw BadCredentialsException("Invalid email or password")
 
         if (!passwordEncoder.matches(password, member.password)) {
@@ -29,7 +29,7 @@ class MemberAuthenticationProvider(
 
         return MemberEmailAuthenticationToken(
             email = email,
-            authorities = listOf(SimpleGrantedAuthority(MEMBER.roleName())),
+            authorities = listOf(SimpleGrantedAuthority(MEMBER.roleName()), SimpleGrantedAuthority(member.grade)),
             details = UserDetails(member.id),
         )
     }

@@ -13,14 +13,14 @@ import org.springframework.stereotype.Component
 
 @Component
 class LecturerAuthenticationProvider(
-    private val lecturerJpaRepository: LecturerJpaRepository,
+    private val lecturerRepository: LecturerJpaRepository,
     private val passwordEncoder: PasswordEncoder,
 ) : AuthenticationProvider {
     override fun authenticate(authentication: Authentication): Authentication {
         val email = authentication.principal as String
         val password = authentication.credentials as String
         val lecturer =
-            lecturerJpaRepository.findByEmail(email)
+            lecturerRepository.findByEmail(email)
                 ?: throw BadCredentialsException("Invalid email or password")
 
         if (!passwordEncoder.matches(password, lecturer.password)) {

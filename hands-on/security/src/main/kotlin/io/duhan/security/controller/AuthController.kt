@@ -2,7 +2,7 @@ package io.duhan.security.controller
 
 import io.duhan.security.application.AuthService
 import io.duhan.security.application.dto.AuthCommand.EmailAuthCommand
-import io.duhan.security.application.dto.AuthResult
+import io.duhan.security.application.dto.TokenResult
 import io.duhan.security.domain.UserType.ADMIN
 import io.duhan.security.domain.UserType.LECTURER
 import io.duhan.security.domain.UserType.MEMBER
@@ -17,7 +17,7 @@ class AuthController(
     @PostMapping("/admin/login")
     fun adminLogin(
         @RequestBody request: EmailLoginRequest,
-    ): AuthResult =
+    ): TokenResult =
         authService.authenticate(
             EmailAuthCommand(
                 email = request.email,
@@ -29,7 +29,7 @@ class AuthController(
     @PostMapping("/lecturer/login")
     fun lecturerLogin(
         @RequestBody request: EmailLoginRequest,
-    ): AuthResult =
+    ): TokenResult =
         authService.authenticate(
             EmailAuthCommand(
                 email = request.email,
@@ -41,7 +41,7 @@ class AuthController(
     @PostMapping("/member/login")
     fun memberLogin(
         @RequestBody request: EmailLoginRequest,
-    ): AuthResult =
+    ): TokenResult =
         authService.authenticate(
             EmailAuthCommand(
                 email = request.email,
