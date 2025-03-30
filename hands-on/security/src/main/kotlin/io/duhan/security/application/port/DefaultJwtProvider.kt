@@ -16,7 +16,7 @@ import javax.crypto.SecretKey
 @Component
 class DefaultJwtProvider(
     @Value("\${jwt.secret}") private val secretKey: String,
-    @Value("\${jwt.access-token-expiration-seconds:3600}") private val accessTokenExpirationSeconds: Long,
+    @Value("\${jwt.access-token-expiration-seconds:1800}") private val accessTokenExpirationSeconds: Long,
     @Value("\${jwt.refresh-token-expiration-seconds:604800}") private val refreshTokenExpirationSeconds: Long,
 ) : JwtProvider {
     private val logger = LoggerFactory.getLogger(JwtProvider::class.java)
