@@ -1,4 +1,4 @@
-package io.duhan.security.controller
+package io.duhan.security.controller.dto
 
 data class EmailLoginRequest(
     val email: String,

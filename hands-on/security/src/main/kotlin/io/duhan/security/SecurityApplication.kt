@@ -53,13 +53,6 @@ class DataInit(
             ),
         )
 
-        adminRoleJpaRepository.save(
-            AdminRole(
-                adminId = admin.id,
-                role = "DELETE_MEMBER",
-            ),
-        )
-
         lecturerJpaRepository.save(
             Lecturer(
                 email = "lecturer@test.com",

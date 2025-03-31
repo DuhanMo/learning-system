@@ -4,23 +4,20 @@ import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.core.GrantedAuthority
 
 class JwtAuthenticationToken : AbstractAuthenticationToken {
-    private val principal: String // username
-    private val credentials: String // jwt
+    private val principal: String // jwt
+    private val credentials: String = ""
 
     constructor(token: String) : super(null) {
-        this.principal = ""
-        this.credentials = token
+        this.principal = token
         this.isAuthenticated = false
     }
 
     constructor(
-        username: String,
         token: String,
         authorities: Collection<GrantedAuthority>,
         details: Any?,
     ) : super(authorities) {
-        this.principal = username
-        this.credentials = token
+        this.principal = token
         this.details = details
         this.isAuthenticated = true
     }

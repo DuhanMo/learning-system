@@ -1,9 +1,15 @@
-package io.duhan.security.application.port
+package io.duhan.security.infrastructure.security.provider
 
+import io.duhan.security.application.port.JwtProvider
+import io.duhan.security.domain.TokenClaims
+import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtParser
 import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.MalformedJwtException
+import io.jsonwebtoken.UnsupportedJwtException
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
+import io.jsonwebtoken.security.SignatureException
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -58,6 +64,47 @@ class DefaultJwtProvider(
             expirationSeconds = refreshTokenExpirationSeconds,
             tokenType = TOKEN_TYPE_REFRESH,
         )
+
+    override fun validateAndExtractClaims(token: String): TokenClaims {
+        val invalidTokenClaims =
+            TokenClaims(
+                id = 0L,
+                roles = emptyList(),
+                isValid = false,
+                tokenType = null,
+            )
+        try {
+            val claims = jwtParser.parseSignedClaims(token).payload
+
+            val id = claims.subject.toLongOrNull() ?: 0L
+            val roles = (claims[ROLES_KEY] as? List<*>)?.filterIsInstance<String>() ?: emptyList()
+            val permissions = (claims[PERMISSIONS_KEY] as? List<*>)?.filterIsInstance<String>() ?: emptyList()
+            val tokenType = claims[TOKEN_TYPE_KEY] as? String
+            val expirationTime = claims.expiration?.toInstant()
+
+            val isValidType = tokenType == TOKEN_TYPE_ACCESS || tokenType == TOKEN_TYPE_REFRESH
+
+            return TokenClaims(
+                id = id,
+                roles = roles,
+                permissions = permissions,
+                isValid = isValidType,
+                tokenType = tokenType,
+                expirationTime = expirationTime,
+            )
+        } catch (e: SignatureException) {
+            logger.error("Invalid JWT signature: ${e.message}")
+        } catch (e: MalformedJwtException) {
+            logger.error("Invalid JWT token: ${e.message}")
+        } catch (e: ExpiredJwtException) {
+            logger.error("JWT token is expired: ${e.message}")
+        } catch (e: UnsupportedJwtException) {
+            logger.error("JWT token is unsupported: ${e.message}")
+        } catch (e: IllegalArgumentException) {
+            logger.error("JWT claims string is empty: ${e.message}")
+        }
+        return invalidTokenClaims
+    }
 
     private fun createToken(
         subject: String,
