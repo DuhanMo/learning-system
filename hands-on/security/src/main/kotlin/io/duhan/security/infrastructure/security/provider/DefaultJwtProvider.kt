@@ -82,7 +82,7 @@ class DefaultJwtProvider(
             val tokenType = claims[TOKEN_TYPE_KEY] as? String
             val expirationTime = claims.expiration?.toInstant()
 
-            val isValidType = tokenType == TOKEN_TYPE_ACCESS || tokenType == TOKEN_TYPE_REFRESH
+            val isValidType = tokenType == TOKEN_TYPE_ACCESS
 
             return TokenClaims(
                 id = id,
