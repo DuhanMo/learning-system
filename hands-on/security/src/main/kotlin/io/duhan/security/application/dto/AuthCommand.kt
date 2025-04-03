@@ -14,6 +14,11 @@ sealed class AuthCommand {
         val socialToken: String,
     ) : AuthCommand()
 
+    data class RefreshTokenAuthCommand(
+        val refreshToken: String,
+        val userType: UserType,
+    ) : AuthCommand()
+
     data class ApiKeyAuthCommand(
         val apiKey: String,
     ) : AuthCommand()

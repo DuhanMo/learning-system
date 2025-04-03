@@ -3,6 +3,7 @@ package io.duhan.security.infrastructure.security.token
 import io.duhan.security.application.dto.AuthCommand
 import io.duhan.security.application.dto.AuthCommand.ApiKeyAuthCommand
 import io.duhan.security.application.dto.AuthCommand.EmailAuthCommand
+import io.duhan.security.application.dto.AuthCommand.RefreshTokenAuthCommand
 import io.duhan.security.application.dto.AuthCommand.SocialAuthCommand
 import io.duhan.security.domain.UserType
 import io.duhan.security.infrastructure.security.token.EmailAuthenticationToken.AdminEmailAuthenticationToken
@@ -17,6 +18,7 @@ class AuthenticationTokenFactory {
         when (authCommand) {
             is EmailAuthCommand -> createEmailAuthenticationToken(authCommand)
             is SocialAuthCommand -> createMemberSocialAuthenticationToken(authCommand)
+            is RefreshTokenAuthCommand -> createRefreshTokenAuthenticationToken(authCommand)
             is ApiKeyAuthCommand -> throw IllegalArgumentException("미구현 인증방식")
         }
 
@@ -46,4 +48,7 @@ class AuthenticationTokenFactory {
             authCredentials.socialToken,
             authCredentials.provider,
         )
+
+    private fun createRefreshTokenAuthenticationToken(authCredentials: RefreshTokenAuthCommand): RefreshTokenAuthenticationToken =
+        RefreshTokenAuthenticationToken(authCredentials.refreshToken, authCredentials.userType)
 }
