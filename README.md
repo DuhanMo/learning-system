@@ -16,6 +16,7 @@
 1. [Distributed Lock](hands-on/distributed-lock/README.md)
 2. [Spring Kafka](hands-on/spring-kafka)
 3. [Spring Security](hands-on/security/README.md)
+4. [회원시스템 이벤트기반 아키텍처 구축하기](hands-on/member-system-event-driven-architecture/%ED%9A%8C%EC%9B%90%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EC%9D%B4%EB%B2%A4%ED%8A%B8%EA%B8%B0%EB%B0%98%20%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98%20%EA%B5%AC%EC%B6%95%ED%95%98%EA%B8%B0.md)
 
 ### 강의 & Article
 다양한 강의 또는 아티클을 읽고 실습 또는 내용을 정리한 디렉터리입니다.
