@@ -13,9 +13,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.transaction.PlatformTransactionManager
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @Configuration
 class TerminatorConfig {
@@ -40,26 +37,22 @@ class TerminatorConfig {
     @Bean
     @StepScope
     fun terminatorTasklet(
-        @Value("#{jobParameters['executionDate']}") executionDate: LocalDate,
-        @Value("#{jobParameters['startTime']}") startTime: LocalDateTime,
+        @Value("#{jobParameters['questDifficulty']}") questDifficulty: QuestDifficulty,
     ): Tasklet {
         return Tasklet { _, _ ->
-            logger.info("시스템 처형 정보:");
-            logger.info("처형 예정일: ${executionDate.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일"))}");
-            logger.info("작전 개시 시각: ${startTime.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분 ss초"))}");
-            logger.info("⚡ ${executionDate}에 예정된 시스템 정리 작전을 개시합니다.");
-            logger.info("💀 작전 시작 시각: $startTime");
-            var currentTime = startTime
-            for (i in 1..3) {
-                currentTime = currentTime.plusHours(1)
-                logger.info(
-                    "☠️ 시스템 정리 ${i}시간 경과... 현재 시각:${
-                        currentTime.format(DateTimeFormatter.ofPattern("HH시 mm분"))
-                    }"
-                )
+            logger.info("⚔️ 시스템 침투 작전 개시!")
+            logger.info("임무 난이도: $questDifficulty")
+
+            val baseReward = 100
+            val rewardMultiplier = when (questDifficulty) {
+                QuestDifficulty.EASY -> 1
+                QuestDifficulty.NORMAL -> 2
+                QuestDifficulty.HARD -> 3
             }
-            logger.info("🎯 임무 완료: 모든 대상 시스템이 성공적으로 제거되었습니다.")
-            logger.info("⚡ 작전 종료 시각: ${currentTime.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분 ss초"))}")
+            val totalReward = baseReward * rewardMultiplier
+            logger.info("💥 시스템 해킹 진행 중...")
+            logger.info("🏆 시스템 장악 완료!")
+            logger.info("💰 획득한 시스템 리소스: ${totalReward} 메가바이트")
             RepeatStatus.FINISHED
         }
     }
