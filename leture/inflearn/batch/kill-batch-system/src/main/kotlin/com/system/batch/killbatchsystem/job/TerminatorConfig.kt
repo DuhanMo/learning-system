@@ -17,9 +17,9 @@ import org.springframework.transaction.PlatformTransactionManager
 @Configuration
 class TerminatorConfig {
     @Bean
-    fun terminatorJob(jobRepository: JobRepository, terminationStepByDate: Step): Job {
+    fun terminatorJob(jobRepository: JobRepository, terminationStep: Step): Job {
         return JobBuilder("terminatorJob", jobRepository)
-            .start(terminationStepByDate)
+            .start(terminationStep)
             .build()
     }
 
